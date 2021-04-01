@@ -16,11 +16,16 @@ namespace Day16
             a3.DisplayAccountInfo();
             a4.DisplayAccountInfo();
             
-            Console.WriteLine();
             a1.InterestAfterMonths(12);
             a2.InterestAfterMonths(12);
             a3.InterestAfterMonths(12);
-            a4.InterestAfterMonths(12);          
+            a4.InterestAfterMonths(12);
+
+            a1.Deposit(100);
+            a2.Deposit(12);
+
+            a1.Withdraw(100);
+
         }
 
         public class Account
@@ -45,7 +50,7 @@ namespace Day16
             public void Deposit(double amt) 
             {
                 _balance += amt;
-                Console.WriteLine($"${amt} has been successfully deposited into {_customer.name}'s account.");
+                Console.WriteLine($"Depositing ${amt} into {_customer.name}'s account...");
                 Console.WriteLine($" -> Updated Balance: ${_balance}");
                 Console.WriteLine();
             }
@@ -111,7 +116,7 @@ namespace Day16
             public void Withdraw(double amt)
             {
                 _balance -= amt;
-                Console.WriteLine($"${amt} has been successfully withdrawn from {_customer.name}'s account.");
+                Console.WriteLine($"Withdrawing ${amt} from {_customer.name}'s account...");
                 Console.WriteLine($" -> Updated Balance: ${_balance}");
                 Console.WriteLine();
             }
