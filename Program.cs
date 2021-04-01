@@ -6,14 +6,16 @@ namespace Day16
     {
         public static void Main(string[] args)
         {
-            var a1 = new DepositAccount("Kevin", "individual", 500, 0.015);
+            var a1 = new DepositAccount("Kevin", "individual", 1000, 0.015);
             var a2 = new LoanAccount("Dep", "individual", 30000, 0.07);
             var a3 = new MortgageAccount("IVS LLC", "company", 80000, 0.04);
             a1.DisplayAccountInfo();
             a2.DisplayAccountInfo();
+            
             Console.WriteLine();
-            a1.Deposit(100);
-            a1.Withdraw(200);
+            a1.InterestAfterMonths(12);
+            a2.InterestAfterMonths(12);
+
 
         }
 
@@ -67,6 +69,41 @@ namespace Day16
                     Console.WriteLine("Invalid Account!");
                 }
                 Console.WriteLine();
+            }
+
+            public double InterestAfterMonths(int numOfMonths)
+            {
+                double calculatedInterest = 0;
+                if (this is DepositAccount)
+                {
+                    // Deposit accounts have no interest rate if their balance is positive and less than 1000.
+                    Console.WriteLine($"Calculating interest for {_customer.name}'s Deposit Account after {numOfMonths} months...");
+                    if (_balance > 0 && _balance <= 1000) calculatedInterest = _balance;                    
+                    else calculatedInterest = _balance * Math.Pow(1 + _interestRate, numOfMonths);
+                }
+                else if (this is LoanAccount)
+                {
+                    //  Loan accounts have no interest rate during the first 3 months if held by individuals and during the first 2 months if held by a company.
+                    Console.WriteLine($"Calculating interest for {_customer.name}'s Loan Account after {numOfMonths} months...");
+                    int gracePeriod = (_customer.type == "individual") ? 3 : 2;
+                    if (numOfMonths <= gracePeriod) calculatedInterest = _balance;                  
+                    else calculatedInterest = _balance * Math.Pow(1 + _interestRate, numOfMonths - gracePeriod);
+                }
+                else if (this is MortgageAccount)
+                {
+                    // Mortgage accounts have ½ the interest rate during the first 12 months for companies and no interest rate during the first 6 months for individuals.
+                    Console.WriteLine($"Calculating interest for {_customer.name}'s Mortgage Account after {numOfMonths} months...");
+                    int gracePeriod = (_customer.type == "company") ? 12 : 6;
+                    double adjustedRate = (_customer.type == "company") ? (_interestRate / 2) : 0;
+                    calculatedInterest = (_balance * Math.Pow(1 + adjustedRate, gracePeriod)) + (_balance * Math.Pow(1 + _interestRate, numOfMonths - gracePeriod));
+                }
+                else
+                {
+                    Console.WriteLine("Cannot calculate interest for Invalid Account!");
+                }
+                Console.WriteLine($" -> Accumulated interest would ${calculatedInterest - _balance}.");
+                Console.WriteLine($" -> New balance would be ${calculatedInterest}.\n");
+                return calculatedInterest;
             }
         }
 
