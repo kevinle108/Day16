@@ -85,7 +85,7 @@ namespace Day16
                     accountType = "Loan";
                     int gracePeriod = (_customer.type == "individual") ? 3 : 2;
                     if (numOfMonths <= gracePeriod) updatedBalance = _balance;                  
-                    else updatedBalance = _balance * Math.Pow(1 + _interestRate, numOfMonths - gracePeriod);
+                    else updatedBalance = _balance * (1+_interestRate) * (numOfMonths - gracePeriod);
                 }
                 else if (this is MortgageAccount)
                 {
@@ -93,7 +93,7 @@ namespace Day16
                     accountType = "Mortgage";                    
                     int gracePeriod = (_customer.type == "company") ? 12 : 6;
                     double adjustedRate = (_customer.type == "company") ? (_interestRate / 2) : 0;
-                    updatedBalance = (_balance * Math.Pow(1 + adjustedRate, gracePeriod)) + (_balance * Math.Pow(1 + _interestRate, numOfMonths - gracePeriod));
+                    updatedBalance = _balance * (1 + adjustedRate) * gracePeriod + _balance * (1 + _interestRate) * (numOfMonths - gracePeriod);
                 }
                 else
                 {
@@ -101,8 +101,8 @@ namespace Day16
                 }
                 updatedBalance = Math.Round(updatedBalance, 2);
                 Console.WriteLine($"Calculating interest for {_customer.name}'s {accountType} Account ({Math.Round(_interestRate * 100, 3)}% interest) after {numOfMonths} months...");
-                Console.WriteLine($" -> Accumulated interest would ${Math.Round(updatedBalance - _balance, 2)}.");
-                Console.WriteLine($" -> New balance would be ${updatedBalance}.\n");
+                Console.WriteLine($" -> Accumulated interest would ${Math.Round(updatedBalance - _balance, 2)}");
+                Console.WriteLine($" -> New balance would be ${updatedBalance}\n");
                 return updatedBalance;
             }
         }
